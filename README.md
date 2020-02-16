@@ -25,6 +25,8 @@ This workshop will have 3 sections:
   * Making a scatter plot
   * Adding a linear regression line to a scatter plot
 
-By the end of the worshop, we will manipulate a data file to make the following figure. 
+# Why R?
 
-![](plots/SexYear.jpeg)
+![](Figures/IntroWelcome.jpg)
+
+![](Figures/SexYear.jpeg)

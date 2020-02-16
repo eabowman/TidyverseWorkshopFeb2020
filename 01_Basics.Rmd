@@ -1,0 +1,28 @@
+---
+title: "01_Basics"
+author: "Elizabeth Bowman"
+date: "2/16/2020"
+output: html_document
+---
+
+# Create a new project
+
+We are going to create a new project in RStudio for this workshop on your desktop. Projects allow you to divide your data and scripts into multiple workflows.
+1. Go to file.
+2. Click 'New Project'.
+3. Click 'New Directory'.
+4. Click 'New Project'.
+5. In 'Directory Name', type Tidyverse WS.
+6. In 'Create project as a subdirectory of:', type ~/Desktop
+
+Now if you look at your desktop, you will see a new folder which will include our new RSstudio project. 
+
+# Core tidy principles
+1. Variables make up the columns
+2. Observations make up the rows.
+3. Values go into cells. 
+
+
+## Importance of consistency
+
+# What is a data table?

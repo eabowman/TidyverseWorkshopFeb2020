@@ -22,7 +22,16 @@ Now if you look at your desktop, you will see a new folder which will include ou
 2. Observations make up the rows.
 3. Values go into cells. 
 
+|        | Dry_weight_g | Seeds | Treatment_type |
+---------|--------------|-------|----------------|
+| $F45A$ |   $1.4$      |  $13$ |     $Heat$     |
 
 ## Importance of consistency
+An important principles is to keep all values for a single variable consistent. That is all values for a variable have to be numerical or categorical. You can't mix values (e.g. 9, three, four, 49) as this will cause errors when your code is run. If a column in a data frame has a mix of numerical and categorical data (e.g.  9, three, four, 49), R will automatically classify the whole column as categorical. A simple way to check how your variables are categorized within R is to use the str() command.
 
-# What is a data table?
+```{r}
+str(9.4)
+str('hello')
+```
+
+You can think of values as having a physical location within a data table. In the table above, the **Treatment_type** 

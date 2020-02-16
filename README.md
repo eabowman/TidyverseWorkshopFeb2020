@@ -8,7 +8,7 @@
   * Create a box and whisker plot
   * Create a scatter plot with a line of best fit
 
-This is an introduction to tidyverse and is meant for people with no or limited knowledge of R and RStudio. This 1.5 hour workshop was taught at the University of Arizona Feb. 18, 2020. It was written by Elizabeth Bowman and modified from the DataCarpentry tutorial 'Data Manipulation usign dplyr and tidyr' (https://datacarpentry.org/R-ecology-lesson/03-dplyr.html) to fit the time frame and the audience.
+This is an introduction to tidyverse and is meant for people with no or limited knowledge of R and RStudio. This 1.5 hour workshop was taught at the University of Arizona Feb. 18, 2020. It was adapted and modified by Elizabeth Bowman from the DataCarpentry tutorial 'Data Manipulation usign dplyr and tidyr' (https://datacarpentry.org/R-ecology-lesson/03-dplyr.html) to fit the time frame and the audience.
 
 # Why R?
 

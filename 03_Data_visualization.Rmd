@@ -7,7 +7,82 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(magrittr)
 surveys <- read.csv('~/Desktop/TidyverseWS/portal_data_joined.csv')
 ```
 
-#GGplot
+# GGplot2
+ggplot graphics are built step-by-step by adding elements or layers. The basic template for ggplot is
+```{r ggplot basic, eval = F}
+ggplot(data = <data>,
+       mapping = aes(x = <x.variable>,
+                     y = <y.variable>)) +
+  <geom_function>
+```
+
+## Basic distribution plot
+Let's try to plot a distribution of weight from our animal survey data.
+```{r barplot weight}
+ggplot(data = surveys,
+       mapping = aes(x = weight)) +
+  geom_bar()
+```
+Right away, we can see that our data is right skewed.
+
+## Box and whisker plot
+If we want to look at weight as a function of animal genus, we can use a box and whisker plot. 
+```{r boxwhisker}
+ggplot(data = surveys,
+       mapping = aes(x = genus,
+                     y = weight)) +
+  geom_boxplot()
+```
+Let's fix the label titles and change the direction of the x axis labels.
+```{r boxwhisker axes}
+ggplot(data = surveys,
+       mapping = aes(x = genus,
+                     y = weight)) +
+  geom_boxplot() +
+  xlab('Genus') +
+  ylab('Weight (g)') +
+  theme(axis.text.x=element_text(angle = -90, hjust = 0))
+```
+
+## Scatter plot
+Another basic plot, is the scatter plot. To produce a scatter plot, your x and y variable both need to be continuous. To plot this, we will use the geom_point() function instead of geom_boxplot().
+
+For an example, let's plot weight as a function of hindfoot_length.
+```{r scatter}
+ggplot(data = surveys,
+       mapping = aes(x = hindfoot_length,
+                     y = weight)) +
+  geom_point()
+```
+
+# Activity 1
+>Let's create a new table in which we
+*filter values of weight and hindfoot_length that are NA
+*filter year values that are greater than 1999.
+*group data by year
+*select variables sex, year, hindfoot_length, and weight
+
+Using these paramaters to create a new data frame called plot.df
+
+
+```{r Activity1}
+surveys %>%
+  filter(!is.na(weight), !is.na(hindfoot_length), year > 1995, year < 2001, !sex == "") %>%
+  group_by(sex, year) %>%
+  select(sex, year, hindfoot_length, weight) -> plot.df
+```
+
+```{r Activity1 Plot}
+ggplot(plot.df, aes(x = hindfoot_length,
+                    y = weight)) +
+  geom_point(size = 2) +
+  geom_smooth(method = 'lm', se = F, color = 'darkgrey') +
+  theme_classic() +
+  ylab('Weight (g)') +
+  xlab('Hindfood length (mm)')
+```

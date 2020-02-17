@@ -2,25 +2,34 @@
 title: "02_Data_manipulation"
 author: "Elizabeth Bowman"
 date: "2/16/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(magrittr)
+
+surveys <- read.csv('~/Desktop/TidyverseWS/portal_data_joined.csv')
+```
 # Common dplyr functions
 
 ## select(): subset columns
 The first argument in dplyr function should be the data frame name.
-```{r}
+```{r select, eval = F}
 select(surveys, plot_id, species_id, weight)
 ```
 
 '-' in front of a variable excludes that variable from the output data frame
 
-```{r}
+```{r neg select, eval = F}
 select(surveys, -record_id, -species_id)
 ```
 
 ## filter(): subset rows on conditions
-```{r}
+```{r filter, eval= F}
 filter(surveys, year == 1995)
 ```
 
@@ -36,40 +45,44 @@ For example:
   *3 %>%
   *2
 
-```{r}
+```{r example2 base}
 car_data <- transform(aggregate(. ~ cyl,
                     data = subset(mtcars, hp > 100),
                     FUN = function(x) round(mean(x,digits = 2))),
           kpl = mpg * 0.4251)
+head(car_data)
 ```
 
-```{r}
+```{r example2 tidyr}
 mtcars %>%
   subset(hp > 100) %>%
   aggregate(. ~ cyl, data = ., FUN = . %>% mean %>% round(2)) %>%
   transform(kpl = mpg %>% multiply_by(0.4251)) %>%
-  print
+  head()
 ```
 
 You are using the 'pipes' to progressively build on previous functions. See here[linked phrase](http://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) for more information on 'pipes'.
 
 Now to put what we've learned together.
-```{r}
+```{r year95}
 surveys %>%
   filter(year == 1995) %>%
-  select(species_id, sex, weight) 
+  select(species_id, sex, weight)  %>%
+  head()
 ```
 
 You can check each step individually if you need by running each line one-by-one. This makes it easy to see where an error is occurring in your code.
 
-# Activity
-Using pipes, subset the surveys data to include animals that weigh less than 5 grams and only keep columns species_id, sex, and weight.
-Hints: 
-* for less than use the symbol <
-* remember: the weight column is in grams, so you do not need to state that
+# Activity 1
+Using pipes, 
+1. subset the surveys data to include animals that weigh less than 5 grams and
+2. only keep columns species_id, sex, and weight.
+>Hints: 
+* For 'less than', use the symbol <
+* Remember: the weight column is in grams, so you do not need to state that
 
 Answer:
-```{r}
+```{r Activity1}
 surveys %>% 
   filter(weight < 5) %>%
   select(species_id, sex, weight) -> surveys.small
@@ -79,26 +92,27 @@ head(surveys.small)
 ## mutate(): create new columns by using information other than columns
 This is a very useful function when you want to create a new column based on the values in an already existing column, i.e. unit conversions or a ratio value fom two other columns.
 The weight in our surveys data frame is in grams. Let's convert it to kg.
-```{r}
+```{r mutate kg}
 surveys %>% 
-  mutate(weight_kg = weight/1000)
+  mutate(weight_kg = weight/1000) %>%
+  tail()
 ```
 Let's add another column in pounds. 
-```{r}
+```{r mutate kg lb}
 surveys %>% 
   mutate(weight_kg = weight/1000,
          weight_lbs = weight_kg *2.2) %>%
   tail()
 ```
 
-# Activity
+# Activity 2
 Create a new data frame which contains
-* only the species_id column and hindfoot_half column,
-* a new column called hindfoot_half which contains values that are half the hindfoot_length values, 
-* and only hindfoot_half values less than 30.
+1. only the species_id column and hindfoot_half column,
+2. a new column called hindfoot_half which contains values that are half the hindfoot_length values, and
+3. only hindfoot_half values less than 30.
 
 Answer:
-```{r}
+```{r Activity2}
 surveys %>%
   mutate(hindfoot_half = hindfoot_length/2) %>%
   filter(hindfoot_half < 30) %>%
@@ -106,7 +120,119 @@ surveys %>%
 ```
 
 ## group_by() and summarize(): create summary statistics on group data
-A common approach used in data analysis is splitting data and 
+A common approach used in data analysis is splitting data into groups based on a categorical variable, applying an analysis to each group, and then combining the results (split-apply-combine paradigm). dplyr uses the group_by() function to achiee this.
 
+group_by() is used often with summarize(). summerize() collapses each group into a single row summary statistic for each group (e.g. average, minimum).
 
+Let's calculate the mean weight by sex.
+```{r group summarize}
+surveys %>%
+  group_by(sex) %>%
+  summarize(mean_weight = mean(weight,na.rm = T))
+```
 
+We can also group by multiple columns.
+```{r group mult col}
+surveys %>%
+  group_by(sex, species_id) %>%
+  summarize(mean_weight = mean(weight,na.rm = T))
+```
+
+If you notice, the mean_weight column has NaN (Not a Number). Let's remove the missing values for weight before calculating the mean.
+```{r remove NaN}
+surveys %>%
+  filter(!is.na(weight)) %>%
+  group_by(sex, species_id) %>%
+  summarize(mean_weight = mean(weight,na.rm = T))
+```
+
+## arrange(): sort results
+Let's add another variable, minimum weight or min_weight, to the summary statistics table and arrange the groups by mean weight.
+```{r arrange}
+surveys %>%
+  filter(!is.na(weight)) %>%
+  group_by(sex, species_id) %>%
+  summarize(mean_weight = mean(weight,na.rm = T),
+            min_weight = min(weight)) %>%
+  arrange(mean_weight)
+```
+
+Arranging in desciending order (highest to lowest)
+```{r arrange desc}
+surveys %>%
+  filter(!is.na(weight)) %>%
+  group_by(sex, species_id) %>%
+  summarize(mean_weight = mean(weight,na.rm = T),
+            min_weight = min(weight)) %>%
+  arrange(desc(mean_weight))
+```
+
+## count(): count discrete values
+When working with ecological data, we often want to know the number of observations found for each factor or group of factors. Think of a site x species matrix.
+Let's count the number of observations for each sex.
+```{r count}
+surveys %>%
+  count(sex, sort = T)
+```
+'sort = T' sorts the count number in descending order.
+
+If you would like to combine values, you can list them such as here where I am counting the numbers of each sex from each species.
+```{r count by species}
+surveys %>%
+  count(sex, species, sort = T)
+```
+
+# Activity 3
+Create a table with a count of the the number of species (species_id) within each plot (plot_id).
+
+Answer:
+```{r activity3}
+surveys %>%
+  count(plot_id, species_id)
+```
+
+## Reshaping with spread and gather
+Remember the rules of a tidy dataset?
+1. Each variables has its own columns.
+2. Each observation has its own rows.
+3. Each value must has its own cell.
+The fourth rule is 'Each type of observational unit forms a table'. If we are interested in comparing the mean weight of each species between plots, we would need to create a table where each row is is values of variables association with each plot.
+
+For instance, we want to know the mean weight of each genus in each plot. Let's create table that shows that. 
+```{r mean wt}
+surveys %>%
+  filter(!is.na(weight)) %>%
+  group_by(genus, plot_id) %>%
+  summarize(mean_weight = mean(weight)) -> surveys_mean
+head(surveys_mean)
+```
+
+This almost gets us there, but we need to reshape the data with genera as the columns and plot_ids as the rows. To do this, we need spread() to transform the data, i.e. take a column and spread it out across rows.
+```{r spread}
+surveys_mean %>%
+  spread(key = genus, value = mean_weight, fill = 0) -> surveys_spread
+head(surveys_spread)
+```
+
+# Activity 4
+The output from **Activity 3** is almost a site x species matrix. The only difference is that in a site by species matrix you have sites as the rows and species as the columns. Use the code from **Activity 3** to create a site x species matrix with the spread() function.
+
+Answer:
+```{r activity4}
+surveys %>%
+  count(plot_id, species_id) %>%
+  spread(key = species_id, value = n, fill = 0) -> surveys_specobs
+```
+
+The opposing function gather() takes data spread out across multiple rows and gathers it into a single column. Let's transform surveys_spread back using the gather() function.
+```{r gather}
+surveys_spread %>%
+  gather(key = genus, value = mean_weight, -plot_id) -> surveys_gather
+```
+
+We created a key called genus and value called mean_weight, i.e. we are creating two columns. The '-plot_id' signifies that the function will use all columns except plot_id for the key variable.
+
+## Exporting data
+```{r write csv}
+write_csv(surveys_spread, pat = 'sitexspecies.csv')
+```

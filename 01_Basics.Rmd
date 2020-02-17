@@ -20,9 +20,9 @@ We are going to create a new project in RStudio for this workshop on your deskto
 Now if you look at your desktop, you will see a new folder which will include our new RSstudio project. 
 
 # Core tidy principles
-1. Variables make up the columns
-2. Observations make up the rows.
-3. Values go into cells. 
+1. Each variables has its own columns.
+2. Each observation has its own rows.
+3. Each value must has its own cell.
 
 |        | Dry_weight_g | Seeds | Treatment_type |
 ---------|--------------|-------|----------------|
@@ -31,7 +31,7 @@ Now if you look at your desktop, you will see a new folder which will include ou
 ## Importance of consistency
 An important principles is to keep all values for a single variable consistent. That is all values for a variable have to be numerical or categorical. You can't mix values (e.g. 9, three, four, 49) as this will cause errors when your code is run. If a column in a data frame has a mix of numerical and categorical data (e.g.  9, three, four, 49), R will automatically classify the whole column as categorical. A simple way to check how your variables are categorized within R is to use the str() command.
 
-```{r}
+```{r structure}
 str(9.4)
 str('hello')
 ```
@@ -43,13 +43,13 @@ You can think of values as having a physical location within a data table. In th
 Tidyverse employs a specific type of data frame called a tibble, but also works with the standard data frame that base R uses. We do not have time to cover tibble tables here, but if you would like to learn more, see this link[linked phrase](http://tibble.tidyverse.org/). 
 
 # Load and install tidyverse
-#```{r}
+```{r install packages}
 #install.packages('tidyverse')
 #library(tidyverse)
 #library(magrittr) # package is needed for what are called 'pipes'.
-#```
+```
 
-Some of the packages loaded:
+>Some of the packages loaded:
 * reader: for reading data
 * ggplot2: for making plots
 * tibble: tidyverse version of data frames
@@ -76,18 +76,18 @@ taxon | e.g. Rodent, Reptile, Bird, Rabbit
 plot_type | type of plot
 
 ### Download the sample data from online
-```{r}
+```{r download}
 download.file(url="https://ndownloader.figshare.com/files/2292169",
               destfile = '~/Desktop/TidyverseWS/portal_data_joined.csv')
 ```
 
 ### Load data into RStudio environment
-```{r}
+```{r read in data}
 surveys <- read.csv('~/Desktop/TidyverseWS/portal_data_joined.csv')
 ```
 
 Now lets take a look at the data to ensure that it loaded correctly.
-```{r}
+```{r check out data}
 head(surveys)
 str(surveys)
 ```

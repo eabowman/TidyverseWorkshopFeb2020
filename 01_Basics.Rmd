@@ -2,7 +2,9 @@
 title: "01_Basics"
 author: "Elizabeth Bowman"
 date: "2/16/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 # Create a new project
@@ -34,4 +36,58 @@ str(9.4)
 str('hello')
 ```
 
-You can think of values as having a physical location within a data table. In the table above, the **Treatment_type** 
+str() can also be used with data frames. We will do this in a moment. 
+
+You can think of values as having a physical location within a data table. In the table above, the **Treatment_type** 'Heat' is in the intersection of column 3 and row 1. Notice that the column names and row names are not included in the location. 
+
+Tidyverse employs a specific type of data frame called a tibble, but also works with the standard data frame that base R uses. We do not have time to cover tibble tables here, but if you would like to learn more, see this link[linked phrase](http://tibble.tidyverse.org/). 
+
+# Load and install tidyverse
+#```{r}
+#install.packages('tidyverse')
+#library(tidyverse)
+#library(magrittr) # package is needed for what are called 'pipes'.
+#```
+
+Some of the packages loaded:
+* reader: for reading data
+* ggplot2: for making plots
+* tibble: tidyverse version of data frames
+* dplyr: for manipulating data frames; creating new variables, calculating summary statistics, etc...
+* tidyr: for reshaping data
+
+# Loading data
+We are going to download a dataset that contains data from an anaimal survey. Below is a list of all the variables in the dataset. Remember these variables will be the columns of our data frame.
+
+Variables | Description
+----------|------------
+record_id | Unique id for observation
+month | month of observation
+day | day of observation
+year | year of observation
+plot_id | ID of a particular plot
+species_id | 2-letter coe
+sex | sex of animal ('M','F')
+hindfood_length | length of the hindfoot in mm
+weight | weight of the animals in grams
+genus | genus of animal
+species | species of animal
+taxon | e.g. Rodent, Reptile, Bird, Rabbit
+plot_type | type of plot
+
+### Download the sample data from online
+```{r}
+download.file(url="https://ndownloader.figshare.com/files/2292169",
+              destfile = '~/Desktop/TidyverseWS/portal_data_joined.csv')
+```
+
+### Load data into RStudio environment
+```{r}
+surveys <- read.csv('~/Desktop/TidyverseWS/portal_data_joined.csv')
+```
+
+Now lets take a look at the data to ensure that it loaded correctly.
+```{r}
+head(surveys)
+str(surveys)
+```

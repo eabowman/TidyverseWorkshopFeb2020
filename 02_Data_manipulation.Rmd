@@ -1,0 +1,112 @@
+---
+title: "02_Data_manipulation"
+author: "Elizabeth Bowman"
+date: "2/16/2020"
+output: html_document
+---
+
+# Common dplyr functions
+
+## select(): subset columns
+The first argument in dplyr function should be the data frame name.
+```{r}
+select(surveys, plot_id, species_id, weight)
+```
+
+'-' in front of a variable excludes that variable from the output data frame
+
+```{r}
+select(surveys, -record_id, -species_id)
+```
+
+## filter(): subset rows on conditions
+```{r}
+filter(surveys, year == 1995)
+```
+
+Now, I would like to put filter and select together,but first we need to learn about 'pipes'.
+
+## What is a 'pipe'?
+A 'pipe' moves an object foward from one function or command to the next. It is intended to a) increase the readability and maintainability of code and b) decrease code development time.
+
+For example:
+2*(3*(4 + 4))
+
+4 + 4 %>% 
+  *3 %>%
+  *2
+
+```{r}
+car_data <- transform(aggregate(. ~ cyl,
+                    data = subset(mtcars, hp > 100),
+                    FUN = function(x) round(mean(x,digits = 2))),
+          kpl = mpg * 0.4251)
+```
+
+```{r}
+mtcars %>%
+  subset(hp > 100) %>%
+  aggregate(. ~ cyl, data = ., FUN = . %>% mean %>% round(2)) %>%
+  transform(kpl = mpg %>% multiply_by(0.4251)) %>%
+  print
+```
+
+You are using the 'pipes' to progressively build on previous functions. See here[linked phrase](http://cran.r-project.org/web/packages/magrittr/vignettes/magrittr.html) for more information on 'pipes'.
+
+Now to put what we've learned together.
+```{r}
+surveys %>%
+  filter(year == 1995) %>%
+  select(species_id, sex, weight) 
+```
+
+You can check each step individually if you need by running each line one-by-one. This makes it easy to see where an error is occurring in your code.
+
+# Activity
+Using pipes, subset the surveys data to include animals that weigh less than 5 grams and only keep columns species_id, sex, and weight.
+Hints: 
+* for less than use the symbol <
+* remember: the weight column is in grams, so you do not need to state that
+
+Answer:
+```{r}
+surveys %>% 
+  filter(weight < 5) %>%
+  select(species_id, sex, weight) -> surveys.small
+head(surveys.small)
+```
+
+## mutate(): create new columns by using information other than columns
+This is a very useful function when you want to create a new column based on the values in an already existing column, i.e. unit conversions or a ratio value fom two other columns.
+The weight in our surveys data frame is in grams. Let's convert it to kg.
+```{r}
+surveys %>% 
+  mutate(weight_kg = weight/1000)
+```
+Let's add another column in pounds. 
+```{r}
+surveys %>% 
+  mutate(weight_kg = weight/1000,
+         weight_lbs = weight_kg *2.2) %>%
+  tail()
+```
+
+# Activity
+Create a new data frame which contains
+* only the species_id column and hindfoot_half column,
+* a new column called hindfoot_half which contains values that are half the hindfoot_length values, 
+* and only hindfoot_half values less than 30.
+
+Answer:
+```{r}
+surveys %>%
+  mutate(hindfoot_half = hindfoot_length/2) %>%
+  filter(hindfoot_half < 30) %>%
+  select(species_id, hindfoot_half) -> surveys.hfh
+```
+
+## group_by() and summarize(): create summary statistics on group data
+A common approach used in data analysis is splitting data and 
+
+
+

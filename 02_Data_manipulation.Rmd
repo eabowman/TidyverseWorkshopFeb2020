@@ -77,7 +77,9 @@ You can check each step individually if you need by running each line one-by-one
 Using pipes, 
 1. subset the surveys data to include animals that weigh less than 5 grams and
 2. only keep columns species_id, sex, and weight.
->Hints: 
+
+Hints: 
+
 * For 'less than', use the symbol <
 * Remember: the weight column is in grams, so you do not need to state that
 

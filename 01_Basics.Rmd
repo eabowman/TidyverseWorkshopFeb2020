@@ -49,7 +49,8 @@ Tidyverse employs a specific type of data frame called a tibble, but also works 
 #library(magrittr) # package is needed for what are called 'pipes'.
 ```
 
->Some of the packages loaded:
+Some of the packages loaded:
+
 * reader: for reading data
 * ggplot2: for making plots
 * tibble: tidyverse version of data frames

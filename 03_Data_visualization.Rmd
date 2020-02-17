@@ -21,8 +21,16 @@ ggplot(data = <data>,
   <geom_function>
 ```
 
-## Basic distribution plot
-Let's try to plot a distribution of weight from our animal survey data.
+* data specifies the data frame from which variables will be taken
+* mapping is used to specify the variables that will be plotted 
+* geoms are the graphical representation of the data (e.g. points, box and whisker, lines)
+  * geom_point()
+  * geom_boxplot()
+  * geom_line()
+* Elements or layers are added successively to the plot by using the + operator. You can add any number of parameters to your plot to personalize it to your specifications. I'll show you some aspects of this later. Let's start with a basic plot
+
+## Distribution plot
+Let's try to plot a distribution of weight from our animal survey data to assess our data.
 ```{r barplot weight}
 ggplot(data = surveys,
        mapping = aes(x = weight)) +
@@ -31,14 +39,15 @@ ggplot(data = surveys,
 Right away, we can see that our data is right skewed.
 
 ## Box and whisker plot
-If we want to look at weight as a function of animal genus, we can use a box and whisker plot. 
+If we want to look at weight (continuous variable) as a function of animal genus (categorical variable), we can use geom_boxplot().
 ```{r boxwhisker}
 ggplot(data = surveys,
        mapping = aes(x = genus,
                      y = weight)) +
   geom_boxplot()
 ```
-Let's fix the label titles and change the direction of the x axis labels.
+
+Let's add some layers by fixing the label titles and changing the direction of the x axis labels.
 ```{r boxwhisker axes}
 ggplot(data = surveys,
        mapping = aes(x = genus,
@@ -61,28 +70,56 @@ ggplot(data = surveys,
 ```
 
 # Activity 1
->Let's create a new table in which we
-*filter values of weight and hindfoot_length that are NA
-*filter year values that are greater than 1999.
-*group data by year
+
+Let's create a new table in which we
+
+* filter values of weight and hindfoot_length that are NA
+* filter year values that are greater than 1999.
+* group data by sex and year
 *select variables sex, year, hindfoot_length, and weight
 
-Using these paramaters to create a new data frame called plot.df
-
-
+Using these parameters, create a new data frame called plot.df
 ```{r Activity1}
 surveys %>%
-  filter(!is.na(weight), !is.na(hindfoot_length), year > 1995, year < 2001, !sex == "") %>%
+  filter(!is.na(weight), !is.na(hindfoot_length), year > 1999) %>%
   group_by(sex, year) %>%
   select(sex, year, hindfoot_length, weight) -> plot.df
 ```
 
+Let's build a scatter plot, in which we a) plot weight as a function of hindfoot_length, b) divide plots out by sex and by year, c) include linear regressions in each plot, and d) modify the x and y axis label.
+
+### Base scatter plot
+```{r Activity1 base}
+ggplot(plot.df, aes(x = hindfoot_length,
+                    y = weight)) +
+  geom_point(size = 2)
+```
+
+### Divide plots by sex and year
+```{r Activity1 division}
+ggplot(plot.df, aes(x = hindfoot_length,
+                    y = weight)) +
+  geom_point(size = 2) +
+  facet_grid(vars(sex), vars(year))
+```
+
+### Add linear regression lines
 ```{r Activity1 Plot}
 ggplot(plot.df, aes(x = hindfoot_length,
                     y = weight)) +
   geom_point(size = 2) +
+  facet_grid(vars(sex), vars(year)) +
+  geom_smooth(method = 'lm', se = F, color = 'darkgrey')
+```
+
+### Modify labels for x and y axes
+```{r Activity1 Plot}
+ggplot(plot.df, aes(x = hindfoot_length,
+                    y = weight)) +
+  geom_point(size = 2) +
+  facet_grid(vars(sex), vars(year)) +
   geom_smooth(method = 'lm', se = F, color = 'darkgrey') +
-  theme_classic() +
   ylab('Weight (g)') +
   xlab('Hindfood length (mm)')
 ```
+

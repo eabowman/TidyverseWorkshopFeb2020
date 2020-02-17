@@ -2,7 +2,9 @@
 title: "03_Data_visualization"
 author: "Elizabeth Bowman"
 date: "2/16/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -104,7 +106,7 @@ ggplot(plot.df, aes(x = hindfoot_length,
 ```
 
 ### Add linear regression lines
-```{r Activity1 Plot}
+```{r Activity1 regression}
 ggplot(plot.df, aes(x = hindfoot_length,
                     y = weight)) +
   geom_point(size = 2) +
@@ -113,7 +115,7 @@ ggplot(plot.df, aes(x = hindfoot_length,
 ```
 
 ### Modify labels for x and y axes
-```{r Activity1 Plot}
+```{r Activity1 labels}
 ggplot(plot.df, aes(x = hindfoot_length,
                     y = weight)) +
   geom_point(size = 2) +

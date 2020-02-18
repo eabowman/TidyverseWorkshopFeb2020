@@ -10,6 +10,7 @@ output:
 # Create a new project
 
 We are going to create a new project in RStudio for this workshop on your desktop. Projects allow you to divide your data and scripts into multiple workflows.
+
 1. Go to file.
 2. Click 'New Project'.
 3. Click 'New Directory'.
